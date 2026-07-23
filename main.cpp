@@ -9,7 +9,7 @@
 #include "math/CoordinateConversion.h"
 #include "math/UnitConversion.h"
 
-#include "physics/Mass.h"
+#include "models/Rocket.h"
 
 using namespace std;
 using namespace Eigen;

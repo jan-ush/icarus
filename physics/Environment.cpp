@@ -1,7 +1,7 @@
-#include "Radius.h"
+#include "Environment.h"
 #include <vector>
 
-double calculateRadius(double latitude){
+double calculateN(double latitude){
     const double a = 6378137.0; //Semumajor Axis of Earth
     const double b = 6356752.3142; //Semiminor Axis of Earth
     
