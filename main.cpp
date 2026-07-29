@@ -1,10 +1,9 @@
-#include <iostream>
-#include <vector>
-#include <algorithm>
+
 #include <Eigen/Geometry>
-#include <numbers>
+#include <iostream>
+
 #define _USE_MATH_DEFINES
-#include <cmath>
+
 
 #include "math/CoordinateConversion.h"
 #include "math/UnitConversion.h"
@@ -37,9 +36,9 @@ int main(){
     const double launch_alt = 3.0;
 
     //Sensor Data
-    double altitude;
-    double longitude;
-    double latitude;
+    double altitude = 1000; // Example altitude
+    double longitude = launch_long + 300;
+    double latitude = launch_lat + 300;
 
     //Convert Sensor Data to Vectors
     Vector3d ECEF_rocketPosition = gpsToECEF(longitude, latitude, altitude);
@@ -49,6 +48,12 @@ int main(){
 
     Quaterniond rotation;
     Quaterniond angularVelocity;
+
+    Vector3d TEST_ENU = ECEFtoENU(ECEF_rocketPosition, ECEF_startPosition, Vector3d(launch_long, launch_lat, launch_alt));
+
+    string output = "Rocket Position in ENU: " + to_string(TEST_ENU.x()) + ", " + to_string(TEST_ENU.y()) + ", " + to_string(TEST_ENU.z());
+
+    cout << output;
 
     return 0;
 }

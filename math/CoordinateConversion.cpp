@@ -1,6 +1,5 @@
 #include "CoordinateConversion.h"
 
-#include <iostream>
 #include <Eigen/Geometry>
 #include "UnitConversion.h"
 #include "../physics/Environment.h"
@@ -55,3 +54,4 @@ Vector3d ECEFtoENU(Vector3d rocketPos_ECEF, Vector3d startPos_ECEF, Vector3d sta
 
     return position_ENU;
 }
+
