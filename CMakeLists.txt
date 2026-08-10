@@ -12,17 +12,26 @@ find_package(Eigen3 5.0.1 REQUIRED)
 
 # 2. Define your executable and its source files
 # Recursively find every .cpp file in the project directory and its subfolders
-set(SOURCES 
-main.cpp
-hardware/SensorInterface.cpp
-math/CoordinateConversion.cpp
-math/UnitConversion.cpp
-models/Rocket.cpp
-physics/Aerodynamics.cpp
-physics/Environment.cpp
-physics/Propulsion.cpp
-simulator/Dynamics.cpp
-simulator/State.cpp)
+
+file(GLOB GUIDANCE "guidance/*.cpp" "guidance/*.h")
+file(GLOB HARDWARE "hardware/*.cpp" "hardware/*.h")
+file(GLOB DRIVERS "hardware/drivers/*.cpp" "hardware/drivers/*.h")
+file(GLOB MATH "math/*.cpp" "math/*.h")
+file(GLOB MODELS "models/*.cpp" "models/*.h")
+file(GLOB PHYSICS "physics/*.cpp" "physics/*.h")
+file(GLOB SIMULATOR "simulator/*.cpp" "simulator/*.h")
+
+set(SOURCES
+        ${GUIDANCE}
+        ${HARDWARE}
+        ${DRIVERS}
+        ${MATH}
+        ${MODELS}
+        ${PHYSICS}
+        ${SIMULATOR}
+        main.cpp
+)
+
 
 add_executable(icarus ${SOURCES})
 

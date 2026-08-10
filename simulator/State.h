@@ -1,10 +1,13 @@
 #include <Eigen/Geometry>
 #include <vector>
 
+#include "../models/RocketModel.h"
+
 #ifndef STATE_H
 #define STATE_H
 
 using namespace Eigen;
+using namespace RocketModel;
 
 namespace State{
     struct currentState
@@ -14,10 +17,12 @@ namespace State{
         Vector3d velocity;
         Vector3d acceleration;
         Quaterniond rotation;
-        Quaterniond angularVelocity;
-        double netMass;
+        Vector3d angularVelocity;
+        double mass;
         double fuelMass;
     };
+
+    
 }
 
 #endif

@@ -8,6 +8,8 @@
 #include "math/CoordinateConversion.h"
 #include "math/UnitConversion.h"
 
+#include "physics/Environment.h"
+
 #include "models/Rocket.h"
 
 using namespace std;
@@ -15,6 +17,7 @@ using namespace Eigen;
 
 using namespace CoordinateConversion;
 using namespace UnitConversion;
+using namespace Environment;
 
 const double RADIUS = 6371000;
 
@@ -31,27 +34,31 @@ int main(){
     const double oxiRate = 79.0;  // Kg/s
 
     //Launchpad coordinates
-    const double launch_long = -80.5772;
-    const double launch_lat = 28.5619;
-    const double launch_alt = 3.0;
+    LLA launchpad = {
+        28.5619,
+        -80.5772,
+        3.0
+    };
 
     //Sensor Data
-    double altitude = 1000; // Example altitude
-    double longitude = launch_long + 300;
-    double latitude = launch_lat + 300;
+    LLA currentPos = {
+        launchpad.latitude + 0.00270,
+        launchpad.longitude  + 0.00307,
+        1000.0
+    };
 
     //Convert Sensor Data to Vectors
-    Vector3d ECEF_rocketPosition = gpsToECEF(longitude, latitude, altitude);
-    Vector3d ECEF_startPosition = gpsToECEF(launch_long, launch_lat, launch_alt);
+    ECEF ECEF_rocketPosition = gpsToECEF(currentPos);
+    ECEF ECEF_startPosition = gpsToECEF(launchpad);
     Vector3d velocity;
     Vector3d acceleration;
 
     Quaterniond rotation;
     Quaterniond angularVelocity;
 
-    Vector3d TEST_ENU = ECEFtoENU(ECEF_rocketPosition, ECEF_startPosition, Vector3d(launch_long, launch_lat, launch_alt));
+    ENU TEST_ENU = ECEFtoENU(ECEF_rocketPosition, ECEF_startPosition, launchpad);
 
-    string output = "Rocket Position in ENU: " + to_string(TEST_ENU.x()) + ", " + to_string(TEST_ENU.y()) + ", " + to_string(TEST_ENU.z());
+    string output = "Rocket Position in ENU: " + to_string(TEST_ENU.east) + ", " + to_string(TEST_ENU.north) + ", " + to_string(TEST_ENU.up);
 
     cout << output;
 
