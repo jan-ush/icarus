@@ -8,21 +8,21 @@ This program is designed to be a simple implementation of atmospheric dynamics f
 ## TODO
 
 ### Initialization & Input
-- [*] Get and store rocket configuration data (dry mass, fuel mass, engine specifications, geometry, etc.)
-- [*] Define launch and landing coordinates
-- [*] Acquire and process initial flight telemetry
-- [*] Convert latitude, longitude, and altitude (LLA) coordinates into Earth-Centered, Earth-Fixed (ECEF) coordinates
-- [*] Convert ECEF coordinates into a local East-North-Up (ENU) coordinate system relative to the launch site
+- [x] Get and store rocket configuration data (dry mass, fuel mass, engine specifications, geometry, etc.)
+- [x] Define launch and landing coordinates
+- [x] Acquire and process initial flight telemetry
+- [x] Convert latitude, longitude, and altitude (LLA) coordinates into Earth-Centered, Earth-Fixed (ECEF) coordinates
+- [x] Convert ECEF coordinates into a local East-North-Up (ENU) coordinate system relative to the launch site
 
 ### Models & Environment
-- [*] Define rocket configuration and physical properties
-- [*] Establish the initial rocket flight state (position, velocity, acceleration, orientation, and mass)
+- [x] Define rocket configuration and physical properties
+- [x] Establish the initial rocket flight state (position, velocity, acceleration, orientation, and mass)
 - [ ] Implement environmental models (gravity, atmospheric density, and wind)
 - [ ] Define engine and aerodynamic properties
 
 ### Physics & Dynamics
 - [ ] Calculate gravitational forces acting on the rocket
-- [*] Calculate engine thrust and fuel consumption
+- [x] Calculate engine thrust and fuel consumption
 - [ ] Implement aerodynamic drag calculations
 - [ ] Calculate resultant forces and acceleration
 - [ ] Propagate rocket velocity and position over time
@@ -30,7 +30,7 @@ This program is designed to be a simple implementation of atmospheric dynamics f
 - [ ] Implement rotational dynamics and orientation updates
 
 ### Guidance
-- [*] Evaluate the current rocket flight state
+- [x] Evaluate the current rocket flight state
 - [ ] Predict the rocket's future trajectory
 - [ ] Compare predicted trajectory against desired landing conditions
 - [ ] Determine the control inputs required to reach the target
