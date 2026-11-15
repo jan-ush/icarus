@@ -26,32 +26,34 @@ ENU
 
 */
 
-Matrix3d rotation;
+namespace CoordinateConversion {
+    Matrix3d rotation;
 
-Vector3d gpsToECEF(double longitude, double latitude, double altitude){
-    double long_Rad = toRadian(longitude);
-    double lat_Rad = toRadian(latitude);
-    double RADIUS = Environment::calculateRadius(latitude);
+    Vector3d gpsToECEF(double longitude, double latitude, double altitude){
+        double long_Rad = toRadian(longitude);
+        double lat_Rad = toRadian(latitude);
+        double RADIUS = Environment::calculateN(latitude);
 
-    double x = (RADIUS+altitude) * cos(lat_Rad) * cos(long_Rad);
-    double y = (RADIUS+altitude) * cos(lat_Rad) * sin(long_Rad);
-    double z = (RADIUS+altitude) * sin(lat_Rad);
+        double x = (RADIUS+altitude) * cos(lat_Rad) * cos(long_Rad);
+        double y = (RADIUS+altitude) * cos(lat_Rad) * sin(long_Rad);
+        double z = (RADIUS+altitude) * sin(lat_Rad);
 
-    return Vector3d (x, y, z);
-}
+        return Vector3d (x, y, z);
+    }
 
-Vector3d ECEFtoENU(Vector3d rocketPos_ECEF, Vector3d startPos_ECEF, Vector3d startPos_LLA){
-    double refLong = toRadian(startPos_LLA.x());
-    double refLat = toRadian(startPos_LLA.y());
+    Vector3d ECEFtoENU(Vector3d rocketPos_ECEF, Vector3d startPos_ECEF, Vector3d startPos_LLA){
+        double refLong = toRadian(startPos_LLA.x());
+        double refLat = toRadian(startPos_LLA.y());
 
-    rotation << 
-    -sin(refLong),              cos(refLong),             0,
-    -sin(refLat)*cos(refLong),    -sin(refLat)*sin(refLong),    cos(refLat),
-    cos(refLat)*cos(refLong),     cos(refLat)*sin(refLong),    sin(refLat);
+        rotation << 
+        -sin(refLong),              cos(refLong),             0,
+        -sin(refLat)*cos(refLong),    -sin(refLat)*sin(refLong),    cos(refLat),
+        cos(refLat)*cos(refLong),     cos(refLat)*sin(refLong),    sin(refLat);
 
-    Vector3d delta_ECEF = rocketPos_ECEF - startPos_ECEF;
-    Vector3d position_ENU = rotation * delta_ECEF;
+        Vector3d delta_ECEF = rocketPos_ECEF - startPos_ECEF;
+        Vector3d position_ENU = rotation * delta_ECEF;
 
-    return position_ENU;
+        return position_ENU;
+    }
 }
 

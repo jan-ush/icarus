@@ -10,3 +10,6 @@ double calculateMass(double dryMass,
     double remainingFuel = std::max(0.0, (fuelMass - (fuelConsumption * numEngines * elapsedTime)));
     return dryMass + remainingFuel;
 }
+
+
+

@@ -1,0 +1,16 @@
+{
+  "name": "icarus",
+  "version-string": "1.0.0",
+  "dependencies": [
+    "eigen3",
+    {
+      "name": "imgui",
+      "features": [
+        "glfw-binding",
+        "opengl3-binding"
+      ]
+    },
+    "implot",
+    "implot3d"
+  ]
+}
