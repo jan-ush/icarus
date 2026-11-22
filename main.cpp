@@ -140,15 +140,19 @@ int main() {
         const double altitude = 1000.0;
         const double longitude = launchLongitude + 300.0;
         const double latitude = launchLatitude + 300.0;
-        const Eigen::Vector3d rocketPosition =
-            CoordinateConversion::gpsToECEF(longitude, latitude, altitude);
-        const Eigen::Vector3d launchPosition =
-            CoordinateConversion::gpsToECEF(launchLongitude, launchLatitude, launchAltitude);
-        const Eigen::Vector3d enu = CoordinateConversion::ECEFtoENU(
+        CoordinateConversion::LLA LLA{longitude, latitude, altitude};
+        CoordinateConversion::LLA LaunchLLA{launchLongitude, launchLatitude, launchAltitude};
+
+        const CoordinateConversion::ECEF rocketPosition =
+            CoordinateConversion::gpsToECEF(LLA);
+        const CoordinateConversion::ECEF launchPosition =
+            CoordinateConversion::gpsToECEF(LaunchLLA);
+        CoordinateConversion::ENU enu = CoordinateConversion::ECEFtoENU(
             rocketPosition,
             launchPosition,
-            Eigen::Vector3d(launchLongitude, launchLatitude, launchAltitude));
-        ImGui::Text("Rocket Position in ENU: %.2f, %.2f, %.2f", enu.x(), enu.y(), enu.z());
+            LaunchLLA);
+
+        ImGui::Text("Rocket Position in ENU: %.2f, %.2f, %.2f", enu.east, enu.north, enu.up);
         ImGui::End();
         // ROCKET CONFIG WINDOW END ---------------------------------
 

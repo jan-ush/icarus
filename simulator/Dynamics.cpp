@@ -7,11 +7,11 @@ using namespace Eigen;
 
 const double GRAVITY = 9.81;
 
-double Dynamics::projectileDisplacement(double initialVelocity, double elapsedTime){
+double projectileDisplacement(double initialVelocity, double elapsedTime){
     return (0.5)*(-GRAVITY)*(elapsedTime)*(elapsedTime) + (initialVelocity)*(elapsedTime);
 }
 
-Vector3d Dynamics::parabolicMotion3D(Vector3d startPosition, double initialVelocity, Vector3d launchAngle, double time){
+Vector3d parabolicMotion3D(Vector3d startPosition, double initialVelocity, Vector3d launchAngle, double time){
     
     //Set startPosition to origin
     double initialVelocity_Z = initialVelocity * cos(UnitConversion::toRadian(launchAngle.z()));
