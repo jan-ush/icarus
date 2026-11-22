@@ -2,8 +2,7 @@
 #define ENVIRONMENT_H
 
 namespace Environment{
-    double calculateN(double latitude);
-    double getGravity();
+    double calculateRadius(double latitude);
 }
 
 #endif

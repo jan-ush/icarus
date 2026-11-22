@@ -6,8 +6,31 @@
 using namespace Eigen;
 
 namespace CoordinateConversion{
-    Vector3d gpsToECEF(double longitude, double latitude, double altitude);
-    Vector3d ECEFtoENU(Vector3d rocketPos_ECEF, Vector3d startPos_ECEF, Vector3d startPos_LLA);
+    struct LLA {
+        double latitude;
+        double longitude;
+        double altitude;
+    };
+
+    struct ECEF {
+        double x;
+        double y;
+        double z;
+    };
+
+    struct ENU {
+        double east;
+        double north;
+        double up;
+    };
+
+    ECEF gpsToECEF(LLA position);
+
+    ENU ECEFtoENU(ECEF rocketPos, ECEF startPos, LLA startLLA);
+
+    Vector3d toVector(ENU enuCoord);
+    Vector3d toVector(ECEF ecefCoord);
+    Vector3d toVector(LLA llaCoord);
 }
 
 #endif
