@@ -1,5 +1,5 @@
 #include "Dynamics.h"
-#include <vector>
+#include <cmath>
 #include <Eigen/Geometry>
 #include "../math/UnitConversion.h"
 
@@ -7,22 +7,22 @@ using namespace Eigen;
 
 const double GRAVITY = 9.81;
 
+namespace Dynamics {
+
 double projectileDisplacement(double initialVelocity, double elapsedTime){
     return (0.5)*(-GRAVITY)*(elapsedTime)*(elapsedTime) + (initialVelocity)*(elapsedTime);
 }
 
-Vector3d parabolicMotion3D(Vector3d startPosition, double initialVelocity, Vector3d launchAngle, double time){
-    
-    //Set startPosition to origin
-    double initialVelocity_Z = initialVelocity * cos(UnitConversion::toRadian(launchAngle.z()));
-    double initialVelocity_X = initialVelocity * cos(UnitConversion::toRadian(launchAngle.x()));
-    double initialVelocity_Y = initialVelocity * cos(UnitConversion::toRadian(launchAngle.y()));
-
-    double position_Z = ((0.5)*(-GRAVITY)*(time)*(time) + (initialVelocity_Z)*(time));
-    double position_X = initialVelocity_X * time;
-    double position_Y = initialVelocity_Y * time;
-
-    Vector3d displacement = {position_X, position_Y, position_Z};
+Vector3d parabolicMotion3D(Vector3d startPosition, double initialVelocity, double launchAngle, double time){
+    const double angleRadians = UnitConversion::toRadian(launchAngle);
+    const double horizontalVelocity = initialVelocity * std::cos(angleRadians);
+    const double verticalVelocity = initialVelocity * std::sin(angleRadians);
+    const Vector3d displacement = {
+        horizontalVelocity * time,
+        0.0,
+        projectileDisplacement(verticalVelocity, time)};
 
     return startPosition + displacement;
+}
+
 }

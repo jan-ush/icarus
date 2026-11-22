@@ -22,7 +22,6 @@
 #include <GL/gl.h>
 #endif
 
-
 int main() {
     if (!glfwInit()) {
         std::cerr << "Failed to initialize GLFW\n";
@@ -153,21 +152,6 @@ int main() {
             LaunchLLA);
 
         ImGui::Text("Rocket Position in ENU: %.2f, %.2f, %.2f", enu.east, enu.north, enu.up);
-        ImGui::End();
-        // ROCKET CONFIG WINDOW END ---------------------------------
-
-
-        // PROJECTILE TEST WINDOW BEGIN -----------------------------
-        ImGui::Begin("Projectile Configuration", nullptr, ImGuiWindowFlags_MenuBar);
-        if (ImGui::BeginMenuBar()) {
-            if (ImGui::BeginMenu("File")) {
-                if (ImGui::MenuItem("Exit")) {
-                    glfwSetWindowShouldClose(window, GLFW_TRUE);
-                }
-                ImGui::EndMenu();
-            }
-            ImGui::EndMenuBar();
-        }
 
         static double initialVelocity = 20.0;
         static double launchAngle = 45;
@@ -190,23 +174,56 @@ int main() {
 
         if (ImGui::Button("Simulate!")) {
             fit2DAxes = true;
-            timeIncrements.clear();
-            calculatedHeights.clear();
-
+            fit3DAxes = true;
+            hasSeaLevelIntersection = false;
+            xPositions3D.resize(numSamples);
+            yPositions3D.resize(numSamples);
+            zPositions3D.resize(numSamples);
             timeIncrements.resize(numSamples);
             calculatedHeights.resize(numSamples);
-            const double verticalVelocity =
-                initialVelocity * std::sin(launchAngle * 3.14159265358979323846 / 180.0);
+
             for (int i = 0; i < numSamples; ++i) {
                 const double fraction = static_cast<double>(i) / (numSamples - 1);
-                timeIncrements[i] = startTime + fraction * (endTime - startTime);
-                calculatedHeights[i] =
-                    std::max(Dynamics::projectileDisplacement(verticalVelocity, timeIncrements[i]), 0.0);
+                const double time = startTime + fraction * (endTime - startTime);
+                const Vector3d position = Dynamics::parabolicMotion3D(
+                    Vector3d::Zero(), initialVelocity, launchAngle, time);
+
+                xPositions3D[i] = position.x();
+                yPositions3D[i] = position.y();
+                zPositions3D[i] = position.z();
+                timeIncrements[i] = time;
+                calculatedHeights[i] = position.z();
             }
+
+            for (std::size_t i = 1; i < zPositions3D.size(); ++i) {
+                const double previousZ = zPositions3D[i - 1];
+                const double currentZ = zPositions3D[i];
+                if (previousZ >= 0.0 && currentZ <= 0.0 && (previousZ > 0.0 || currentZ < 0.0)) {
+                    const double fraction = previousZ / (previousZ - currentZ);
+                    seaLevelIntersectionX =
+                        xPositions3D[i - 1] + fraction * (xPositions3D[i] - xPositions3D[i - 1]);
+                    seaLevelIntersectionY =
+                        yPositions3D[i - 1] + fraction * (yPositions3D[i] - yPositions3D[i - 1]);
+                    hasSeaLevelIntersection = true;
+                    break;
+                }
+            }
+
+            if (!hasSeaLevelIntersection) {
+                const auto zeroPosition = std::find(zPositions3D.begin(), zPositions3D.end(), 0.0);
+                if (zeroPosition != zPositions3D.end()) {
+                    const std::size_t index = static_cast<std::size_t>(
+                        zeroPosition - zPositions3D.begin());
+                    seaLevelIntersectionX = xPositions3D[index];
+                    seaLevelIntersectionY = yPositions3D[index];
+                    hasSeaLevelIntersection = true;
+                }
+            }
+
         }
 
         ImGui::End();
-        // PROJECTILE TEST WINDOW END -----------------------------
+        // ROCKET CONFIG WINDOW END ---------------------------------
 
         //PROJECTILE GRAPH BEGIN 
         ImGui::Begin("Projectile Simulation", nullptr, ImGuiWindowFlags_MenuBar);
@@ -251,71 +268,6 @@ int main() {
                 ImGui::EndMenu();
             }
             ImGui::EndMenuBar();
-        }
-
-        static double initialVelocity_3D = 20.0;
-        static Vector3d launchAngle_3D = {0,0,0};
-        static double startTime_3D = 0;
-        static double endTime_3D = 6;
-        static int numSamples3D = 100;
-
-        ImGui::Text("Configure Projectile");
-        ImGui::InputDouble("Launch Velocity", &initialVelocity_3D);
-        ImGui::InputDouble("Launch Angle X", &launchAngle_3D.x());
-        ImGui::InputDouble("Launch Angle Y", &launchAngle_3D.y());
-        ImGui::InputDouble("Launch Angle Z", &launchAngle_3D.z());
-
-        ImGui::Text("Configure Simulator");
-        ImGui::InputDouble("Start Time", &startTime_3D);
-        ImGui::InputDouble("End Time", &endTime_3D);
-        ImGui::InputInt("Simulation Steps", &numSamples3D);
-        numSamples3D = std::clamp(numSamples3D, 2, 10000);
-        if (endTime_3D <= startTime_3D) {
-            endTime_3D = startTime_3D + 0.1;
-        }
-        
-        if (ImGui::Button("Simulate!##3D")) {
-            fit3DAxes = true;
-            hasSeaLevelIntersection = false;
-            xPositions3D.resize(numSamples3D);
-            yPositions3D.resize(numSamples3D);
-            zPositions3D.resize(numSamples3D);
-
-            for (int i = 0; i < numSamples3D; ++i) {
-                const double fraction = static_cast<double>(i) / (numSamples3D - 1);
-                const double time = startTime_3D + fraction * (endTime_3D - startTime_3D);
-                const Vector3d position = Dynamics::parabolicMotion3D(
-                    Vector3d::Zero(), initialVelocity_3D, launchAngle_3D, time);
-
-                xPositions3D[i] = position.x();
-                yPositions3D[i] = position.y();
-                zPositions3D[i] = position.z();
-            }
-
-            for (std::size_t i = 1; i < zPositions3D.size(); ++i) {
-                const double previousZ = zPositions3D[i - 1];
-                const double currentZ = zPositions3D[i];
-                if (previousZ >= 0.0 && currentZ <= 0.0 && (previousZ > 0.0 || currentZ < 0.0)) {
-                    const double fraction = previousZ / (previousZ - currentZ);
-                    seaLevelIntersectionX =
-                        xPositions3D[i - 1] + fraction * (xPositions3D[i] - xPositions3D[i - 1]);
-                    seaLevelIntersectionY =
-                        yPositions3D[i - 1] + fraction * (yPositions3D[i] - yPositions3D[i - 1]);
-                    hasSeaLevelIntersection = true;
-                    break;
-                }
-            }
-
-            if (!hasSeaLevelIntersection) {
-                const auto zeroPosition = std::find(zPositions3D.begin(), zPositions3D.end(), 0.0);
-                if (zeroPosition != zPositions3D.end()) {
-                    const std::size_t index = static_cast<std::size_t>(
-                        zeroPosition - zPositions3D.begin());
-                    seaLevelIntersectionX = xPositions3D[index];
-                    seaLevelIntersectionY = yPositions3D[index];
-                    hasSeaLevelIntersection = true;
-                }
-            }
         }
 
         if (xPositions3D.empty()) {

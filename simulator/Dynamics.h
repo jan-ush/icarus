@@ -6,7 +6,7 @@ using namespace Eigen;
 
 namespace Dynamics{
     double projectileDisplacement(double initialVelocity, double elapsedTime);
-    Vector3d parabolicMotion3D(Vector3d startPosition, double initialVelocity, Vector3d launchAngle, double time);
+    Vector3d parabolicMotion3D(Vector3d startPosition, double initialVelocity, double launchAngle, double time);
 }
 
 #endif
