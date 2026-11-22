@@ -31,13 +31,13 @@ This program is designed to be a simple implementation of atmospheric dynamics f
 
 ### Guidance
 - [x] Evaluate the current rocket flight state
-- [ ] Predict the rocket's future trajectory
+- [x] Predict the rocket's future trajectory
 - [ ] Compare predicted trajectory against desired landing conditions
 - [ ] Determine the control inputs required to reach the target
 - [ ] Update guidance decisions throughout the flight
 
 ### Simulator
-- [ ] Initialize the simulation using rocket, environment, and flight data
+- [x] Initialize the simulation using rocket, environment, and flight data
 - [ ] Implement the timestep-based simulation loop
 - [ ] Integrate Guidance, Physics, and Dynamics into each simulation iteration
 - [ ] Update and store the rocket state at each timestep
